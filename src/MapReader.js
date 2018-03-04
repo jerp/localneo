@@ -135,6 +135,16 @@ class MapReader {
       if (fs.existsSync(fullDir + '/destinations.json')) {
         dest = require(fullDir + '/destinations.json')
       }
+      if (fs.existsSync(fullDir + '/credentials.json')) {
+        const credentials = require(fullDir + '/credentials.json')
+        if (dest.destinations) {
+          Object.keys(dest.destinations).forEach(name => {
+            if (credentials[name]) {
+              dest.destinations[name].auth = credentials[name].username + ":" + credentials[name].password;
+            }
+          })
+        }
+      }
       return new MapReader(require(fullDir + '/neo-app.json'), dest, fullDir)
     } catch (err) {
       console.error(`Error while reading application files from "${fullDir}": ${err.message}`)

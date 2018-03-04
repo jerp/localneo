@@ -52,4 +52,16 @@ $ localneo
 Open you browser on [localhost:4567](http://localhost:4567) to get started.
 
 
+### Separate credentials of destinations
 
+To avoid having to commit crendentials to your repository, add a `credentials.json` file that holds username and password. These would override auth settings of `destinations.json`
+
+```json
+{
+  "SAP_BACKEND": {
+    "username": "me_myself_and_i",
+    "password": "pwd1234" 
+  }
+}
+
+```
