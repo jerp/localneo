@@ -21,6 +21,7 @@
     "lint": "standard"
   },
   "dependencies": {
+    "dotenv": "^5.0.1",
     "ecstatic": "^2.1.0",
     "http-proxy": "^1.16.2"
   },

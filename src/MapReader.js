@@ -13,14 +13,8 @@ class MapReader {
     this.dir = basePath
     this.name = path.basename(basePath)
 
-    this.port = 4567
-    this.hostname = 'localhost'
-    if (this.dest.server && this.dest.server.port) {
-      this.port = this.dest.server.port
-    }
-    if (this.dest.server && this.dest.server.hostname) {
-      this.hostname = this.dest.server.hostname
-    }
+    this.port = process.env.PORT || 0
+    this.hostname = process.env.HOST || process.env.HOSTNAME || 'localhost'
   }
 
   getApplication () {
@@ -75,6 +69,7 @@ class MapReader {
 
         let dest = this.getDestTarget(this.dest.destinations[targetInfo.name], targetInfo, targetPath)
         if (dest) {
+          console.log('Serving', targetPath, 'from', dest.proxy.options.target, dest.proxy.options.auth.replace(/:.*/,''), '('+targetInfo.name+')')
           reg.put('dest:' + targetInfo.name, dest)
         }
         return dest
@@ -134,16 +129,11 @@ class MapReader {
       let dest = {}
       if (fs.existsSync(fullDir + '/destinations.json')) {
         dest = require(fullDir + '/destinations.json')
-      }
-      if (fs.existsSync(fullDir + '/credentials.json')) {
-        const credentials = require(fullDir + '/credentials.json')
-        if (dest.destinations) {
-          Object.keys(dest.destinations).forEach(name => {
-            if (credentials[name]) {
-              dest.destinations[name].auth = credentials[name].username + ":" + credentials[name].password;
-            }
-          })
-        }
+        Object.keys(dest.destinations).forEach(name => {
+          if (process.env['DEST_'+name]) {
+            dest.destinations[name].auth = process.env['DEST_'+name]
+          }
+        })
       }
       return new MapReader(require(fullDir + '/neo-app.json'), dest, fullDir)
     } catch (err) {

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('dotenv').config()
 const MapReader = require('./src/MapReader')
 const map = MapReader.fromApplicationDirectory(process.cwd())
 const app = map.getApplication()
